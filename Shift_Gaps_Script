@@ -1,0 +1,197 @@
+/******************************************************************************
+ * Outbound integrations
+ *
+ * Outbound integrations are triggered when an xMatters system action occurs,
+ * such as when an event status changes, a notification is delivered, or a
+ * recipient responds to a message. These system actions are called 'triggers'.
+ *
+ * Outbound integrations can perform tasks such as initiating a follow-up xMatters
+ * event when the status of an event changes or updating another system in your
+ * toolchain when a user responds to a notification.
+ *
+ * xMatters passes information about the trigger to the outbound integration
+ * as a JSON object in the body of the built-in request object. Your outbound
+ * integration can process this data and use it in the script. (To include form
+ * properties in the request data, select 'Include in Outbound Integrations'
+ * from the property's settings on the form layout.)
+ *
+ * The following sample code shows how to work with scripts in the Integration
+ * Builder. You can use it as a template and then customize it to work with your
+ * integration.
+ ******************************************************************************/
+
+/**
+ * Parse the payload data
+ *
+ * This code shows how to extract the payload from the built-in request object.
+ * The specific fields that are included in the payload depends on the type of
+ * trigger and how many form properties are included.
+ */
+var payload = JSON.parse(request.body);
+
+/**
+ * Form properties are included in the payload when they are marked as
+ * 'Include in Outbound Integrations' on the form layout.
+ *
+ * This code shows how to transform the eventProperties object so that
+ * you can access form properties using dot notation, and then shows
+ * how to access the values of form properties named TicketId and Description.
+ */
+if (payload.eventProperties && Array.isArray(payload.eventProperties)) {
+    var eventProperties = payload.eventProperties;
+    payload.eventProperties = {};
+
+    for (var i = 0; i < eventProperties.length; i++) {
+        var eventProperty = eventProperties[i];
+        var key = Object.keys(eventProperty)[0];
+        payload.eventProperties[key] = eventProperty[key];
+    }
+}
+
+
+switch (payload.status) {
+case 'active':
+
+
+// Sets the dates from tomorrow to 7 days following that
+var moment = require('moment');
+var datenow = moment();
+var datefrom = moment().add(1, 'days').format('YYYY-MM-DD');
+var dateto = moment().add(8, 'days').format('YYYY-MM-DD');
+
+console.log(datefrom);
+console.log(dateto);
+
+
+
+// splits the comma separated list of groups
+
+var str = payload.eventProperties['Which groups?'];
+var GroupArray = str.split(",");
+var GroupCount = GroupArray.length;
+//console.log(GroupCount);
+var ResultText = "";
+
+
+for (k = 0; k < GroupCount; k++) {   // loop for the number of groups
+
+
+//console.log("Group= " + GroupArray[k]);
+
+var request = http.request({ 
+     "endpoint": "xMatters",
+     "autoEncodeURI": "false",
+     "path": "/api/xm/1/on-call?groups=" + GroupArray[k] + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
+     "method": "GET"
+ });
+
+var response = request.write();
+
+if (response.statusCode == 200 ) {
+   json = JSON.parse(response.body);
+//   console.log(json);
+
+}
+
+//console.log(json.count);
+var MaxCount = json.count -1;
+var GapCount = 0;
+var Result = [];
+for (i = 0; i < MaxCount; i++) {    //loop for shifts in that group
+    console.log(i);
+    console.log(json.data[i].start);
+    console.log(json.data[i].end);
+    console.log("Number people in shift= " + json.data[i].members.count);
+    
+var StartShift = json.data[i].start;
+var EndShift = json.data[i].end;
+var StartNextShift = json.data[i+1].start;
+
+var StartShiftParsed = StartShift.replace("T", " ").replace("Z", "");
+var EndShiftParsed = EndShift.replace("T", " ").replace("Z", "");
+var StartNextShiftParsed = StartNextShift.replace("T", " ").replace("Z", "");
+
+//console.log(EndShift);
+//console.log(StartNextShift);
+
+if (EndShift != StartNextShift) {
+Result[GapCount] = "Group " + GroupArray[k] + " has a gap between " + EndShiftParsed + " and " + StartNextShiftParsed;
+GapCount=GapCount+1;
+}
+
+if (json.data[i].members.count == "0") {
+Result[GapCount] = "Group " + GroupArray[k] + " has a shift with no members between " + StartShiftParsed + " and " + EndShiftParsed;
+GapCount=GapCount+1;
+}
+
+//console.log(Result);
+//console.log(" ");
+
+}
+
+//for (j = 0; j < GapCount; j++) { 
+//    console.log(Result[j]);
+//}
+
+//console.log(GapCount);
+
+for (j = 0; j < GapCount; j++) {    // loop for number of results
+var ResultText =  ResultText + Result[j] + "<br>";  
+}
+//console.log(GroupArray[k]);
+
+
+}
+
+console.log("The final result is... " + ResultText);
+
+
+
+//******************
+// Get the original sender's username
+//******************
+var EventRequired = payload.eventIdentifier;
+
+var request = http.request({ 
+     "endpoint": "xMatters",
+     "path": "/api/xm/1/events/" + EventRequired,
+     "method": "GET"
+ });
+
+var response = request.write();
+
+if (response.statusCode == 200 ) {
+   json = JSON.parse(response.body);
+   console.log("Retrieved event: " + json.eventId + ". ID = " + json.id);
+
+}
+
+var SenderUsername = json.submitter.targetName;
+console.log(SenderUsername);
+
+
+
+
+// Send the results back to the originator
+
+var trigger = JSON.stringify({
+"properties": {
+"Text": ResultText,
+},
+"recipients" : [ {"targetName": SenderUsername } ]
+});
+console.log( 'Response payload: ' + JSON.stringify( trigger ) );
+var req = http.request({
+method: 'POST',
+endpoint: 'xMatters',
+path: '/reapi/2015-04-01/forms/cb45fef6-1d98-4d8d-bec6-e14a38e7c5b7/triggers',
+headers: {
+'Content-Type': 'application/json'
+}
+});
+req.write(trigger);
+
+}
+
+
+
