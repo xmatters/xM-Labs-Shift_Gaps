@@ -143,9 +143,11 @@ var ResultText =  ResultText + Result[j] + "<br>";
 
 }
 
+
+
 console.log("The final result is... " + ResultText);
 
-
+if (GapCount > 0) {   // Only send a message if there are gaps or empty shifts
 
 //******************
 // Get the original sender's username
@@ -192,6 +194,6 @@ headers: {
 req.write(trigger);
 
 }
-
+}
 
 
