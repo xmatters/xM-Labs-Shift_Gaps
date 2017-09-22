@@ -11,6 +11,7 @@ Regarding scaling, this isn't going to work for big numbers of groups as the IB 
 
 [Watch the video](https://www.youtube.com/watch?v=5jYkxs63Qjo)
 
+[![Watch the video](https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
 
 # How it works
 
