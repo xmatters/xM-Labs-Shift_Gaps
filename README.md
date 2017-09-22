@@ -8,6 +8,8 @@ It's not got all the bells and whistles, it doesn't have nice message formatting
 
 Regarding scaling, this isn't going to work for big numbers of groups as the IB script will timeout.  How big you can go, who knows.  Give it a try and see.
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
+
 # How it works
 
 You send the Shift Gaps message with a comma separated list of groups to check.  This actually goes to a dummy email recipient, you don't need to receive this message.  
@@ -25,7 +27,6 @@ The IB script then goes through each of the groups, looking up the On Call data 
 
 * [ShiftGaps.zip](ShiftGaps.zip) - The comm plan (that has all the scripts and such).
 * [Shift_Gaps_Script.txt](Shift_Gaps_Script.txt) - The Integration Builder JS to setup the outbound integration into xMatters , should you need it standalone to the Comm Plan.  It uses moment.js as a shared library (www.momentjs.com).
-* [Shift_Gaps_and_Empty_Shifts.mov](Media/Shift_Gaps_and_Empty_Shifts.mov) - Video example of the finished integration.
 
 
 # Installation
