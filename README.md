@@ -38,7 +38,7 @@ The IB script then goes through each of the groups, looking up the On Call data 
 2. Edit the Shift Gaps form, set to send email only and change the recipient to some user with a real but junk email address, you don't need to see this message.  Set expiry to 3 minutes.  Set to Web UI and mobile.  I'd hide the recipients, handling etc so the form just shows the box for the group list.
 3. Edit the Shift Gaps Results form, remove voice call and SMS (I haven't set formats for them, you could add them yourself).  You don't need a recipient on this one, IB will send it to the original sender of Shift Gaps. Set to Web Service only.
 4. Copy the Shift Gaps Result Web Service URL, edit the outbound IB script and set the path on the message send at the bottom to this new URL.
-5. Set permissions on the scripts etc.
+5. Set permissions on the forms etc.
 
 # Testing
 
