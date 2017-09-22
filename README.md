@@ -8,7 +8,7 @@ It's not got all the bells and whistles, it doesn't have nice message formatting
 
 Regarding scaling, this isn't going to work for big numbers of groups as the IB script will timeout.  How big you can go, who knows.  Give it a try and see.
 
-(https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
+(https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)
 
 # How it works
 
