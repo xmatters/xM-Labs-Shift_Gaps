@@ -81,7 +81,7 @@ for (k = 0; k < GroupCount; k++) {   // loop for the number of groups
 var request = http.request({ 
      "endpoint": "xMatters",
      "autoEncodeURI": "false",
-     "path": "/api/xm/1/on-call?groups=" + GroupArray[k] + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
+     "path": "/api/xm/1/on-call?groups=" + encodeURI(GroupArray[k]) + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
      "method": "GET"
  });
 
@@ -143,9 +143,11 @@ var ResultText =  ResultText + Result[j] + "<br>";
 
 }
 
+
+
 console.log("The final result is... " + ResultText);
 
-
+if (GapCount > 0) {   // Only send a message if there are gaps or empty shifts
 
 //******************
 // Get the original sender's username
@@ -192,6 +194,6 @@ headers: {
 req.write(trigger);
 
 }
-
+}
 
 

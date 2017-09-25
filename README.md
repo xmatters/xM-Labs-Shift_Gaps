@@ -8,13 +8,15 @@ It's not got all the bells and whistles, it doesn't have nice message formatting
 
 Regarding scaling, this isn't going to work for big numbers of groups as the IB script will timeout.  How big you can go, who knows.  Give it a try and see.
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
+
+[Watch the video](https://www.youtube.com/watch?v=5jYkxs63Qjo)
+
 
 # How it works
 
 You send the Shift Gaps message with a comma separated list of groups to check.  This actually goes to a dummy email recipient, you don't need to receive this message.  
 
-The IB script then goes through each of the groups, looking up the On Call data for the following day and 7 days thereafter.  It analyses the data for shifts that aren't consecutive and ones that have no members.  It works out who sent the original Shift Gaps message and sends them the collated results via the Shift Gaps Results form.
+The IB script then goes through each of the groups, looking up the On Call data for the following day and 7 days thereafter.  It analyses the data for shifts that aren't consecutive and ones that have no members.  It works out who sent the original Shift Gaps message and if it finds anything it sends them the collated results via the Shift Gaps Results form.
 
 
 # Pre-Requisites
@@ -38,7 +40,7 @@ The IB script then goes through each of the groups, looking up the On Call data 
 2. Edit the Shift Gaps form, set to send email only and change the recipient to some user with a real but junk email address, you don't need to see this message.  Set expiry to 3 minutes.  Set to Web UI and mobile.  I'd hide the recipients, handling etc so the form just shows the box for the group list.
 3. Edit the Shift Gaps Results form, remove voice call and SMS (I haven't set formats for them, you could add them yourself).  You don't need a recipient on this one, IB will send it to the original sender of Shift Gaps. Set to Web Service only.
 4. Copy the Shift Gaps Result Web Service URL, edit the outbound IB script and set the path on the message send at the bottom to this new URL.
-5. Set permissions on the scripts etc.
+5. Set permissions on the forms etc.
 
 # Testing
 
