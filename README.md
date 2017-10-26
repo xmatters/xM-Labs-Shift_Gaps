@@ -1,6 +1,3 @@
-
----
-
 # Compound Integration to Detect Shift Gaps and Empty Shifts
 This is a compound integration to solve that problem of whether any of my groups have gaps in the shifts or shifts with no members.  Whilst you can do this through the web interface it relies on you going in and looking.  With this new integration you can have a scheduled task kick this off every day to report on a list of groups you provide and it will message you with any gaps and empty shifts.
 
@@ -9,7 +6,16 @@ It's not got all the bells and whistles, it doesn't have nice message formatting
 Regarding scaling, this isn't going to work for big numbers of groups as the IB script will timeout.  How big you can go, who knows.  Give it a try and see.
 
 
-[Watch the video](https://www.youtube.com/watch?v=5jYkxs63Qjo)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
+
+---------
+
+<kbd>
+  <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+</kbd>
+
+---------
+
 
 
 # How it works
