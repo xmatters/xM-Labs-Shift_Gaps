@@ -50,7 +50,7 @@ The IB script then goes through each of the groups, looking up the On Call data 
 
 # Testing
 
-Send a Shifts Gap message with a comma separated list of groups.  Within a minute you'll be messaged back with details of any gaps or empty shifts!
+Send a Shifts Gap message with a comma separated list of groups.  The original script didn't like spaces after the comma in the list, I've updated it to cope with that now.  Within a minute you'll be messaged back with details of any gaps or empty shifts!
 
 
 # Troubleshooting

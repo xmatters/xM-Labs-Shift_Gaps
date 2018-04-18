@@ -66,22 +66,26 @@ console.log(dateto);
 
 // splits the comma separated list of groups
 
-var str = payload.eventProperties['Which groups?'];
+var str1 = payload.eventProperties['Which groups?'];
+console.log (str1);
+var str = str1.replace(/, /g, ",");
+console.log (str);
 var GroupArray = str.split(",");
 var GroupCount = GroupArray.length;
 //console.log(GroupCount);
 var ResultText = "";
-
+var GapCount = 0;
 
 for (k = 0; k < GroupCount; k++) {   // loop for the number of groups
 
 
-//console.log("Group= " + GroupArray[k]);
+console.log("Group= " + GroupArray[k]);
+console.log("Encoded Group= " + encodeURIComponent(GroupArray[k]));
 
 var request = http.request({ 
      "endpoint": "xMatters",
      "autoEncodeURI": "false",
-     "path": "/api/xm/1/on-call?groups=" + encodeURI(GroupArray[k]) + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
+     "path": "/api/xm/1/on-call?groups=" + encodeURIComponent(GroupArray[k]) + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
      "method": "GET"
  });
 
@@ -95,7 +99,7 @@ if (response.statusCode == 200 ) {
 
 //console.log(json.count);
 var MaxCount = json.count -1;
-var GapCount = 0;
+
 var Result = [];
 for (i = 0; i < MaxCount; i++) {    //loop for shifts in that group
     console.log(i);
@@ -116,11 +120,15 @@ var StartNextShiftParsed = StartNextShift.replace("T", " ").replace("Z", "");
 
 if (EndShift != StartNextShift) {
 Result[GapCount] = "Group " + GroupArray[k] + " has a gap between " + EndShiftParsed + " and " + StartNextShiftParsed;
+console.log(Result[GapCount]);
+var ResultText =  ResultText + Result[GapCount] + "<br>";
 GapCount=GapCount+1;
 }
 
 if (json.data[i].members.count == "0") {
 Result[GapCount] = "Group " + GroupArray[k] + " has a shift with no members between " + StartShiftParsed + " and " + EndShiftParsed;
+console.log(Result[GapCount]);
+var ResultText =  ResultText + Result[GapCount] + "<br>";
 GapCount=GapCount+1;
 }
 
@@ -133,14 +141,14 @@ GapCount=GapCount+1;
 //    console.log(Result[j]);
 //}
 
-//console.log(GapCount);
+console.log('Gapcount is ' + GapCount);
 
-for (j = 0; j < GapCount; j++) {    // loop for number of results
-var ResultText =  ResultText + Result[j] + "<br>";  
-}
+//for (j = 0; j < GapCount; j++) {    // loop for number of results
+//var ResultText =  ResultText + Result[j] + "<br>";  
+//}
 //console.log(GroupArray[k]);
 
-
+console.log(ResultText);
 }
 
 
