@@ -71,7 +71,7 @@ var GroupArray = str.split(",");
 var GroupCount = GroupArray.length;
 //console.log(GroupCount);
 var ResultText = "";
-
+var GapCount = 0;
 
 for (k = 0; k < GroupCount; k++) {   // loop for the number of groups
 
@@ -95,7 +95,7 @@ if (response.statusCode == 200 ) {
 
 //console.log(json.count);
 var MaxCount = json.count -1;
-var GapCount = 0;
+
 var Result = [];
 for (i = 0; i < MaxCount; i++) {    //loop for shifts in that group
     console.log(i);
