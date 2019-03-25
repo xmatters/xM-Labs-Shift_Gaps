@@ -48,9 +48,10 @@ if (payload.eventProperties && Array.isArray(payload.eventProperties)) {
     }
 }
 
-
-switch (payload.status) {
-case 'active':
+if( payload.status != 'active' ) {
+    console.log( 'Ignoring status "' + payload.status + '"' );
+    return;
+}
 
 
 // Sets the dates from tomorrow to 7 days following that
@@ -67,9 +68,9 @@ console.log(dateto);
 // splits the comma separated list of groups
 
 var str1 = payload.eventProperties['Which groups?'];
-console.log (str1);
+
 var str = str1.replace(/, /g, ",");
-console.log (str);
+
 var GroupArray = str.split(",");
 var GroupCount = GroupArray.length;
 //console.log(GroupCount);
@@ -79,76 +80,76 @@ var GapCount = 0;
 for (k = 0; k < GroupCount; k++) {   // loop for the number of groups
 
 
-console.log("Group= " + GroupArray[k]);
-console.log("Encoded Group= " + encodeURIComponent(GroupArray[k]));
+    console.log("Group= " + GroupArray[k]);
+    console.log("Encoded Group= " + encodeURIComponent(GroupArray[k]));
 
-var request = http.request({ 
-     "endpoint": "xMatters",
-     "autoEncodeURI": "false",
-     "path": "/api/xm/1/on-call?groups=" + encodeURIComponent(GroupArray[k]) + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
-     "method": "GET"
- });
+    var request = http.request({ 
+         "endpoint": "xMatters",
+         "autoEncodeURI": "false",
+         "path": "/api/xm/1/on-call?groups=" + encodeURIComponent(GroupArray[k]) + "&from=" + datefrom + "T00:00:00Z&to=" + dateto + "T00:00:00Z&&membersPerShift=3",
+         "method": "GET"
+     });
 
-var response = request.write();
+    var response = request.write();
 
-if (response.statusCode == 200 ) {
-   json = JSON.parse(response.body);
-//   console.log(json);
+    if (response.statusCode == 200 ) {
+       json = JSON.parse(response.body);
+    //   console.log(json);
 
-}
+    }
 
-//console.log(json.count);
-var MaxCount = json.count -1;
+    //console.log(json.count);
+    var MaxCount = json.count -1;
 
-var Result = [];
-for (i = 0; i < MaxCount; i++) {    //loop for shifts in that group
-    console.log(i);
-    console.log(json.data[i].start);
-    console.log(json.data[i].end);
-    console.log("Number people in shift= " + json.data[i].members.count);
-    
-var StartShift = json.data[i].start;
-var EndShift = json.data[i].end;
-var StartNextShift = json.data[i+1].start;
+    var Result = [];
+    for (i = 0; i < MaxCount; i++) {    //loop for shifts in that group
+        console.log(i);
+        console.log(json.data[i].start);
+        console.log(json.data[i].end);
+        console.log("Number people in shift= " + json.data[i].members.count);
+        
+        var StartShift = json.data[i].start;
+        var EndShift = json.data[i].end;
+        var StartNextShift = json.data[i+1].start;
 
-var StartShiftParsed = StartShift.replace("T", " ").replace("Z", "");
-var EndShiftParsed = EndShift.replace("T", " ").replace("Z", "");
-var StartNextShiftParsed = StartNextShift.replace("T", " ").replace("Z", "");
+        var StartShiftParsed = StartShift.replace("T", " ").replace("Z", "");
+        var EndShiftParsed = EndShift.replace("T", " ").replace("Z", "");
+        var StartNextShiftParsed = StartNextShift.replace("T", " ").replace("Z", "");
 
-//console.log(EndShift);
-//console.log(StartNextShift);
+        //console.log(EndShift);
+        //console.log(StartNextShift);
 
-if (EndShift != StartNextShift) {
-Result[GapCount] = "Group " + GroupArray[k] + " has a gap between " + EndShiftParsed + " and " + StartNextShiftParsed;
-console.log(Result[GapCount]);
-var ResultText =  ResultText + Result[GapCount] + "<br>";
-GapCount=GapCount+1;
-}
+        if (EndShift != StartNextShift) {
+            Result[GapCount] = "Group " + GroupArray[k] + " has a gap between " + EndShiftParsed + " and " + StartNextShiftParsed;
+            console.log(Result[GapCount]);
+            var ResultText =  ResultText + Result[GapCount] + "<br>";
+            GapCount=GapCount+1;
+        }
 
-if (json.data[i].members.count == "0") {
-Result[GapCount] = "Group " + GroupArray[k] + " has a shift with no members between " + StartShiftParsed + " and " + EndShiftParsed;
-console.log(Result[GapCount]);
-var ResultText =  ResultText + Result[GapCount] + "<br>";
-GapCount=GapCount+1;
-}
+        if (json.data[i].members.count == "0") {
+            Result[GapCount] = "Group " + GroupArray[k] + " has a shift with no members between " + StartShiftParsed + " and " + EndShiftParsed;
+            console.log(Result[GapCount]);
+            var ResultText =  ResultText + Result[GapCount] + "<br>";
+            GapCount=GapCount+1;
+        }
 
-//console.log(Result);
-//console.log(" ");
+    //console.log(Result);
+    //console.log(" ");
 
-}
+    }
 
-//for (j = 0; j < GapCount; j++) { 
-//    console.log(Result[j]);
-//}
+    //for (j = 0; j < GapCount; j++) { 
+    //    console.log(Result[j]);
+    //}
 
-console.log('Gapcount is ' + GapCount);
+    console.log('Gapcount is ' + GapCount);
 
-//for (j = 0; j < GapCount; j++) {    // loop for number of results
-//var ResultText =  ResultText + Result[j] + "<br>";  
-//}
-//console.log(GroupArray[k]);
+    //for (j = 0; j < GapCount; j++) {    // loop for number of results
+    //var ResultText =  ResultText + Result[j] + "<br>";  
+    //}
+    //console.log(GroupArray[k]);
 
-console.log(ResultText);
+    console.log(ResultText);
 }
 
 
@@ -157,51 +158,50 @@ console.log("The final result is... " + ResultText);
 
 if (GapCount > 0) {   // Only send a message if there are gaps or empty shifts
 
-//******************
-// Get the original sender's username
-//******************
-var EventRequired = payload.eventIdentifier;
-
-var request = http.request({ 
-     "endpoint": "xMatters",
-     "path": "/api/xm/1/events/" + EventRequired,
-     "method": "GET"
- });
-
-var response = request.write();
-
-if (response.statusCode == 200 ) {
-   json = JSON.parse(response.body);
-   console.log("Retrieved event: " + json.eventId + ". ID = " + json.id);
-
-}
-
-var SenderUsername = json.submitter.targetName;
-console.log(SenderUsername);
-
-
-
-
-// Send the results back to the originator
-
-var trigger = JSON.stringify({
-"properties": {
-"Text": ResultText,
-},
-"recipients" : [ {"targetName": SenderUsername } ]
-});
-console.log( 'Response payload: ' + JSON.stringify( trigger ) );
-var req = http.request({
-method: 'POST',
-endpoint: 'xMatters',
-path: '/reapi/2015-04-01/forms/cb45fef6-1d98-4d8d-bec6-e14a38e7c5b7/triggers',
-headers: {
-'Content-Type': 'application/json'
-}
-});
-req.write(trigger);
-
-}
+    //******************
+    // Get the original sender's username
+    //******************
+    var EventRequired = payload.eventIdentifier;
+    
+    var request = http.request({ 
+         "endpoint": "xMatters",
+         "path": "/api/xm/1/events/" + EventRequired,
+         "method": "GET"
+     });
+    
+    var response = request.write();
+    
+    if (response.statusCode == 200 ) {
+       json = JSON.parse(response.body);
+       console.log("Retrieved event: " + json.eventId + ". ID = " + json.id);
+    
+    }
+    
+    var SenderUsername = json.submitter.targetName;
+    console.log(SenderUsername);
+    
+    
+    
+    
+    // Send the results back to the originator
+    
+    var trigger = JSON.stringify({
+        "properties": {
+            "Text": ResultText,
+            },
+        "recipients" : [ {"targetName": SenderUsername } ]
+        });
+    console.log( 'Response payload: ' + JSON.stringify( trigger ) );
+    var req = http.request({
+        method: 'POST',
+        endpoint: 'xMatters',
+        path: '/reapi/2015-04-01/forms/cb45fef6-1d98-4d8d-bec6-e14a38e7c5b7/triggers',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    req.write( trigger );
+    
 }
 
 
