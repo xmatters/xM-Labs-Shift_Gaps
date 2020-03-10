@@ -5,13 +5,12 @@ It's not got all the bells and whistles, it doesn't have nice message formatting
 
 Regarding scaling, this isn't going to work for big numbers of groups as the IB script will timeout.  How big you can go, who knows.  Give it a try and see.
 
-
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jYkxs63Qjo/0.jpg)](https://youtu.be/5jYkxs63Qjo)
-
 ---------
 
 <kbd>
-  <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+<a href="https://support.xmatters.com/hc/en-us/community/topics">
+   <img src="https://github.com/xmatters/xMatters-Labs/raw/master/media/disclaimer.png">
+</a>
 </kbd>
 
 ---------
@@ -33,8 +32,8 @@ The IB script then goes through each of the groups, looking up the On Call data 
 
 # Files
 
-* [ShiftGaps.zip](ShiftGaps.zip) - The comm plan (that has all the scripts and such).
-* [Shift_Gaps_Script.txt](Shift_Gaps_Script.txt) - The Integration Builder JS to setup the outbound integration into xMatters , should you need it standalone to the Comm Plan.  It uses moment.js as a shared library (www.momentjs.com).
+* [ShiftGaps.zip](ShiftGaps.zip) - The workflow (that has all the scripts and such).
+* [Shift_Gaps_Script.txt](Shift_Gaps_Script.txt) - The Integration Builder JS to setup the outbound integration into xMatters , should you need it standalone to the workflow.  It uses moment.js as a shared library (www.momentjs.com).
 
 
 # Installation
@@ -42,7 +41,7 @@ The IB script then goes through each of the groups, looking up the On Call data 
 
 ## The set up (xMatters)
 
-1. Install the Shift Gaps communication plan attached.
+1. Install the Shift Gaps workflow attached.
 2. Edit the Shift Gaps form, set to send email only and change the recipient to some user with a real but junk email address, you don't need to see this message.  Set expiry to 3 minutes.  Set to Web UI and mobile.  I'd hide the recipients, handling etc so the form just shows the box for the group list.
 3. Edit the Shift Gaps Results form, remove voice call and SMS (I haven't set formats for them, you could add them yourself).  You don't need a recipient on this one, IB will send it to the original sender of Shift Gaps. Set to Web Service only.
 4. Copy the Shift Gaps Result Web Service URL, edit the outbound IB script and set the path on the message send at the bottom to this new URL.
